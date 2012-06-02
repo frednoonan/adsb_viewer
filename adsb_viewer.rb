@@ -52,7 +52,9 @@ def info_line(plane)
 	position = "                    "
 	height = "      "
 	if plane[:position_reports][-1] then
-		position = "#{plane[:position_reports][-1][2]}, #{plane[:position_reports][-1][3]}"
+		lat_formatted = "%02.5f" % [ plane[:position_reports][-1][2] ]
+		lon_formatted = "%02.5f" % [ plane[:position_reports][-1][3] ]
+		position = "#{lat_formatted}, #{lon_formatted}"
 		position = " " * (20 - position.size) + position
 		height   = "#{plane[:position_reports][-1][1]}"
 		height   = " " * (6 - height.size) + height
