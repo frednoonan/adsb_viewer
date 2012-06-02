@@ -119,6 +119,12 @@ begin
 	window.refresh()
 	while line = s.gets do
 		frame = ADSB::SBS1.parse(line)
+		if ! frame then
+			open '/tmp/fail.log', 'w' do |f|
+				f.puts "Could not parse line: #{line.inspect}"
+			end
+		end
+		next if ! frame
 		add_frame_to_plane_hash(planes, frame)
 		icao_id = frame.icao_id.to_s
 		if ! order_list.include?(icao_id) then
