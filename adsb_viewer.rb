@@ -59,6 +59,7 @@ def info_line(plane, home_location)
 	height = "      "
 	distance = "        "
 	heading  = "  "
+	speed    = "     "
 	if plane[:position_reports][-1] then
 		lat_formatted = "%02.5f" % [ plane[:position_reports][-1][2] ]
 		lon_formatted = "%02.5f" % [ plane[:position_reports][-1][3] ]
@@ -73,6 +74,10 @@ def info_line(plane, home_location)
 			heading  = "%3.0f" % [ home_location.heading_to(GeoKit::LatLng.new(plane[:position_reports][-1][2], plane[:position_reports][-1][3])) ]
 		end
 	end
+	if plane[:track_reports][-1] then
+		speed = "%3.1f" % [ plane[:track_reports][-1][1] ]
+		speed = " "*(5-speed.size) + speed
+	end
 	diff_height = " "
 	if plane[:diff_height] then
 		diff_height = "0" # "↔"
@@ -85,7 +90,7 @@ def info_line(plane, home_location)
 	packets = "#{plane[:contacts]}"
 	packets = " "*(3-packets.size) + packets
 	last_seen = plane[:contact_times][-1].strftime("%H:%M:%S")
-	id + " " + cc + " " + identification + " " + position + " " + height + " " + diff_height + " " + packets + " " + last_seen + distance + " " + heading
+	id + " " + cc + " " + identification + " " + position + " " + height + " " + diff_height + " " + speed + " " + packets + " " + last_seen + distance + " " + heading
 end
 
 def draw_line(window, planes, home_location, id, i)
@@ -133,9 +138,9 @@ begin
 		end
 		window.attroff(Ncurses::A_BOLD)
 		if home_location then
-			window.mvaddstr(0, 0, "Hex    CC ID          Position           Height    # Seen     Distance" )
+			window.mvaddstr(0, 0, "Hex    CC ID          Position          Height   Speed   # Seen     Distance" )
 		else
-			window.mvaddstr(0, 0, "Hex    CC ID          Position           Height    # Seen" )
+			window.mvaddstr(0, 0, "Hex    CC ID          Position          Height   Speed   # Seen" )
 		end
 		index = order_list.index(icao_id)
 		if index == 0 then
